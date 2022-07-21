@@ -45,11 +45,12 @@ def get_appointments_by_doctor_and_day(doctor_id: int, month: int, day: int, yea
 def add_appointment(appointment_request: PostAppointment):
 
     hour = int(appointment_request.time.split(":")[0])
-    if hour > 12 or hour < 1:
-        raise HTTPException(status_code=400, detail="Invalid time")
-    hour += 12 if appointment_request.ampm is "PM" else 0
 
+    hour += 12 if appointment_request.ampm is "PM" else 0
     minute = int(appointment_request.time.split(":")[1])
+
+    if hour > 12 or hour < 1 or minute > 59 or minute < 0:
+        raise HTTPException(status_code=400, detail="Invalid time")
     if minute % 15 != 0:
         raise HTTPException(status_code=400, detail="Time must be in 15 minute intervals")
 
